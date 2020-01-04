@@ -21,20 +21,15 @@
 }
 
 body {
-    -webkit-animation: bgcolor 20s infinite;
-    animation: bgcolor 10s infinite;
-    -webkit-animation-direction: alternate;
-    animation-direction: alternate;
+
 }
 #title{
-    color:white;
     font-family: 'Raleway', sans-serif;
     font-size: 35px;
     text-align: center;
 }
 #gamePinText{
     text-align: center;
-    color: white;
     font-family: 'Tajawal', sans-serif;
     font-size: 50px;
 }

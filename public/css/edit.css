@@ -35,12 +35,6 @@ body {
 #link{
 
 }
-
-.image {
-    width: 250px;
-    height: 250px;
-}
-
 #game-list{
     text-align: center;
 }
@@ -48,9 +42,7 @@ body {
     text-align: center;
 }
 #gameButton{
-    font-size:18px;
-    border: 0px;
-    background: white;
+    font-size:28px;
 }
 #gameButton:hover{
     cursor: pointer;

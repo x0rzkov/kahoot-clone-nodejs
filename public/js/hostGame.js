@@ -19,10 +19,32 @@ socket.on('noGameFound', function(){
 
 socket.on('gameQuestions', function(data){
     document.getElementById('question').innerHTML = data.q1;
-    document.getElementById('answer1').innerHTML = data.a1;
-    document.getElementById('answer2').innerHTML = data.a2;
-    document.getElementById('answer3').innerHTML = data.a3;
-    document.getElementById('answer4').innerHTML = data.a4;
+
+
+    if (typeof data.a1 !== 'undefined') {
+        document.getElementById('answer1').innerHTML = data.a1;
+    } else {
+        document.getElementById('answer1').style.display = "none";
+    }
+
+    if (typeof data.a2 !== 'undefined') {
+        document.getElementById('answer2').innerHTML = data.a2;
+    } else {
+        document.getElementById('answer2').style.display = "none";
+    }
+
+    if (typeof data.a3 !== 'undefined') {
+        document.getElementById('answer3').innerHTML = data.a3;
+    } else {
+        document.getElementById('answer3').style.display = "none";
+    }
+
+    if (typeof data.a4 !== 'undefined') {
+        document.getElementById('answer4').innerHTML = data.a4;
+    } else {
+        document.getElementById('answer4').style.display = "none";
+    }
+
     var correctAnswer = data.correct;
     document.getElementById('playersAnswered').innerHTML = "Players Answered 0 / " + data.playersInGame;
     updateTimer();

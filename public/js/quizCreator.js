@@ -27,8 +27,8 @@ function addQuestion(){
     var newQuestionDiv = document.createElement("div");
     
     var questionLabel = document.createElement('label');
-    var questionField = document.createElement('input');
-    
+    var questionField = document.createElement('input');    
+
     var answer1Label = document.createElement('label');
     var answer1Field = document.createElement('input');
     

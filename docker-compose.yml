@@ -11,11 +11,12 @@ services:
     depends_on:
     - mongodb
     volumes:
-    - .:/app/
+    - .:/app
     links:
     - mongodb:mongodb
     networks:
     - internal
+    - web
 
   mongodb:
     image: webhippie/mongodb:latest
@@ -29,7 +30,6 @@ services:
     - mongo-backup:/var/lib/backup
     networks:
     - internal
-    - web
     environment:
     - MONGODB_AUTH=${MONGODB_AUTH}
     - MONGODB_AUTH_DB=${MONGODB_AUTH_DB}

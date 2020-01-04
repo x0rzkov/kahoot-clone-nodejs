@@ -21,16 +21,12 @@
 }
 
 body {
-    -webkit-animation: bgcolor 20s infinite;
-    animation: bgcolor 10s infinite;
-    -webkit-animation-direction: alternate;
-    animation-direction: alternate;
 }
+
 #title{
     font-family: 'Raleway', sans-serif;
     text-align: center;
     font-size: 50px;
-    color: white;
 }
 #name{
     width: 50%;
@@ -63,10 +59,8 @@ body {
     text-align: center;
     font-size: 25px;
     font-family: 'Raleway', sans-serif;
-    color: white;
 }
 #host{
-    color: white;
     text-decoration: none;
 }
 #host:hover{
