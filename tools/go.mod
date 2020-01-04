@@ -21,6 +21,7 @@ require (
 	github.com/jinzhu/gorm v1.9.11
 	github.com/josharian/impl v0.0.0-20191119165012-6b9658ad00c7 // indirect
 	github.com/k0kubun/pp v3.0.1+incompatible // indirect
+	github.com/karrick/godirwalk v1.13.4 // indirect
 	github.com/kr/pretty v0.2.0 // indirect
 	github.com/mattn/go-sqlite3 v2.0.2+incompatible
 	github.com/microcosm-cc/bluemonday v1.0.2 // indirect

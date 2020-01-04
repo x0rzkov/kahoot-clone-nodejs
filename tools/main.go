@@ -1,43 +1,77 @@
 package main
 
 import (
+	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/globalsign/mgo"
 	"github.com/k0kubun/pp"
-	"gopkg.in/yaml.v3"
-	// "gopkg.in/mgo.v2"
-	// "gopkg.in/mgo.v2/bson"
+	"github.com/karrick/godirwalk"
 )
 
 func main() {
 
+	optVerbose := flag.Bool("verbose", false, "Print file system entries.")
+	flag.Parse()
+
+	i := 1
+	err := godirwalk.Walk("../dataset", &godirwalk.Options{
+		Callback: func(osPathname string, de *godirwalk.Dirent) error {
+			if *optVerbose {
+				fmt.Printf("%s %s\n", de.ModeType(), osPathname)
+			}
+			if de.ModeType() != os.ModeDir {
+				convertQuizz(osPathname, i)
+			}
+			i++
+			return nil
+		},
+		ErrorCallback: func(osPathname string, err error) godirwalk.ErrorAction {
+			if *optVerbose {
+				fmt.Fprintf(os.Stderr, "ERROR: %s\n", err)
+			}
+
+			// For the purposes of this example, a simple SkipNode will suffice,
+			// although in reality perhaps additional logic might be called for.
+			return godirwalk.SkipNode
+		},
+		Unsorted: true, // set true for faster yet non-deterministic enumeration (see godoc)
+	})
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%s\n", err)
+		os.Exit(1)
+	}
+}
+
+func convertQuizz(filePath string, id int) {
 	// Open our yamlFile
-	yamlFile, err := os.Open("quizz.yaml")
+	jsonFile, err := os.Open(filePath)
 	// if we os.Open returns an error then handle it
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println("Successfully Opened file")
+	fmt.Println("Successfully Opened file: ", filePath)
 	// defer the closing of our jsonFile so that we can parse it later on
-	defer yamlFile.Close()
+	defer jsonFile.Close()
 
-	byteValue, _ := ioutil.ReadAll(yamlFile)
+	byteValue, _ := ioutil.ReadAll(jsonFile)
 
 	var data Data
-	err = yaml.Unmarshal(byteValue, &data)
+	err = json.Unmarshal(byteValue, &data)
 	if err != nil {
-		log.Fatalf("cannot unmarshal data: %v", err)
+		log.Fatalf("cannot unmarshal data: %v\n", err)
 	}
 	//pp.Println(data.Kahoot)
 
-	database := "Kahoot-Like-App"
+	database := "kahootDB"
 	session, err := mgo.Dial("mongodb://127.0.0.1:27017/" + database)
 	if err != nil {
-		log.Fatalf("cannot connect to mongodb host: %v", err)
+		log.Fatalf("cannot connect to mongodb host: %v\n", err)
 	}
 	/*
 		c := session.DB(database).C(collection)
@@ -48,11 +82,42 @@ func main() {
 		}
 	*/
 
-	for _, question := range data.Kahoot.Questions {
-		pp.Println(question)
+	// pp.Println(q)
+
+	quiz := &Quiz{
+		ID:    id,
+		Name:  data.Card.Title,
+		Image: data.Card.Cover,
 	}
 
-	pp.Println(session)
+	for _, q := range data.Kahoot.Questions {
+		question := &QuizQuestion{
+			Question: q.Question,
+		}
+
+		var correctAnswer string
+		for i, c := range q.Choices {
+			question.Answers = append(question.Answers, c.Answer)
+			if c.Correct {
+				correctAnswer = strconv.Itoa(i)
+			}
+		}
+		question.Correct = correctAnswer
+		question.Image = q.Image
+		question.Time = q.Time
+		question.PointsMultiplier = q.PointsMultiplier
+
+		quiz.Questions = append(quiz.Questions, question)
+		// pp.Println(q)
+	}
+
+	coll := session.DB("kahootDB").C("kahootGames")
+	err = coll.Insert(quiz)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	pp.Println(quiz)
 
 	// Use session as normal
 	session.Close()

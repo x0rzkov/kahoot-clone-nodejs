@@ -51,6 +51,8 @@ services:
     - VCAP_APP_PORT=8090
     - ME_CONFIG_MONGODB_AUTH_USERNAME=""
     - ME_CONFIG_MONGODB_AUTH_PASSWORD=""
+    depends_on:
+    - mongodb
     ports:
     - 8090:8090
     networks:
